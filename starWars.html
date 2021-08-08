@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Star Wars</title>
+        <style>
+            body{
+                background-image: url('https://i.gifer.com/37Es.gif');
+                background-repeat: no-repeat;
+                background-size: cover;
+
+            }
+            .search{
+                max-width: 700px;
+                width: 450px;
+                border-radius: 15px;
+                outline: 0;
+                font-size: 15px;
+                background: #252627;
+                color: whitesmoke;
+            }
+            #container{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding-top: 10%;
+            }
+            input{
+                border: 0;
+                padding: 0 15px;
+                outline: 0;
+                color: whitesmoke;
+                font-size: 15px;
+                height: 55px;
+                width: 100%;
+                margin: 0;
+                background: #1f2020;
+                border-radius: 20px;
+                text-align: center;
+            }
+            .result{
+                max-height: 350px;
+                overflow-y: auto;
+                border-radius: 20px;
+                margin-bottom: 10px;
+                background:#1d1e1f ;
+                color: whitesmoke;
+                text-align: center;
+                margin-left: 7%;
+            }
+            .hover:hover{
+                color: darkgreen;
+            }
+            #info{
+                color: darkgreen;
+                justify-content: center;
+                align-items: center;
+                display: grid;
+                padding-top: 15%;
+            }
+            .char{
+                color: darkgreen;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <div>
+                <div style="margin-left: 30%;"><img style="width: 200px;"
+                        src="https://logodownload.org/wp-content/uploads/2015/12/star-wars-logo-3-1.png" alt="Logo"
+                        style="background-color: transparent; "></div>
+                <div>
+                    <div class="search"><input oninput="movieSearch()" type="text" name="" id="query"
+                            placeholder="Search Characters"></div>
+                </div>
+                <div class="result">
+                    <div id="result"></div>
+                </div>
+            </div>
+        </div>
+        <div id="info"></div>
+    </body>
+</html>
+<script>
+    let movie = document.getElementById('result')
+    let personInfo = document.getElementById("info");
+    let cont = document.getElementById('container');
+    var timeid;
+    async function showMovie() {
+        let q = document.getElementById('query').value;
+        if (q.length == 0) {
+            return false
+        }
+        let res = await fetch(`https://swapi.dev/api/people/?search=${q}`)
+        let data = await res.json();
+        return data.results;
+    }
+    async function movieSearch() {
+        if (timeid) {
+            return false;
+        }
+        timeid = setTimeout(() => {
+        main();
+        timeid = undefined
+        }, 100)
+    }
+    function appendnames(e) {
+        movie.innerText = null
+        e.forEach(({ name }) => {
+            let p = document.createElement('p')
+            p.innerText = name;
+            p.setAttribute('class', 'hover');
+            p.addEventListener('click', function () {
+                check(p)
+            })
+            movie.append(p);
+        });
+    }
+    async function main() {
+        let movies = await showMovie();
+        appendnames(movies)
+    }
+    function check(p) {
+        personInfo.innerHTML = null
+        if (p.innerText == "Luke Skywalker") {
+            answer = 1;
+        }
+        if (p.innerText == "C-3PO") {
+            answer = 2;
+        }
+        if (p.innerText == "R2-D2") {
+            answer = 3;
+        }
+        if (p.innerText == "Darth Vader") {
+            answer = 4;
+        }
+        if (p.innerText == "Leia Organa") {
+            answer = 5;
+        }
+        if (p.innerText == "Owen Lars") {
+            answer = 6;
+        }
+        if (p.innerText == "Beru Whitesun lars") {
+            answer = 7;
+        }
+        if (p.innerText == "R5-D4") {
+            answer = 8;
+        }
+        if (p.innerText == "Biggs Darklighter") {
+            answer = 9;
+        }
+        cont.style.display = 'none';
+        personInfo.style.display = 'grid'
+        async function showMovie1() {
+            let q = document.getElementById('query').value;
+            if (q.length == 0) {
+                return false
+            }
+            let res = await fetch(`https://swapi.dev/api/people/${answer}/`)
+            let data = await res.json();
+            console.log(data.height);
+            let div = document.createElement('div')
+            h1 = document.createElement('h1');
+            h1.innerHTML = data.name;
+            p_g = document.createElement('p')
+            p_g.innerHTML = `Gender:${data.gender}`
+            p_h = document.createElement('p');
+            p_h.innerHTML = `Height:${data.height}`
+            p_b = document.createElement('p');
+            p_b.innerHTML = `Birth Year:${data.birth_year}`
+            btn = document.createElement('button')
+            btn.innerHTML = "GO TO HOME"
+            btn.addEventListener('click', function () {
+                cont.style.display = 'flex';
+                personInfo.style.display = 'none'
+            })
+            div.append(h1, p_g, p_b, p_h, btn);
+            div.setAttribute('class', 'char')
+            personInfo.append(div);
+        }
+        showMovie1();
+    }
+</script>
